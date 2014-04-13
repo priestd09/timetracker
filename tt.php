@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2014, Chris Frazier
  * @license https://www.gnu.org/licenses/gpl.txt LGPL
  * 
- * Yet another time tracking CLI app. This is a port of an
- * old set of bash scripts. Pretty straight forward but very
- * effective bare bones solution.
+ * Yet another command-line time tracking app. This is a port
+ * of an old set of bash scripts. Pretty straight forward but
+ * very effective.
  */
 
 
