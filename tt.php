@@ -1,10 +1,21 @@
 #!/usr/bin/php
 <?php
 
+/**
+ * @author Chris Frazier <chris@chrisfrazier.me>
+ * @copyright Copyright (c) 2014, Chris Frazier
+ * @license https://www.gnu.org/licenses/gpl.txt LGPL
+ * 
+ * Yet another time tracking CLI app. This is a port of an
+ * old set of bash scripts. Pretty straight forward but very
+ * effective bare bones solution.
+ */
+
+
 /////////////////////////////////////////////////////////////
 // Uncomment this line if you need to hardcode your timezone
 // (ie: no access to php.ini, etc...)
-date_default_timezone_set('America/New_York');
+// date_default_timezone_set('America/New_York');
 /////////////////////////////////////////////////////////////
 
 
