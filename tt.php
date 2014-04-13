@@ -64,34 +64,42 @@ function print_working($stop = false)
 }
 
 
-function print_summary()
+function parse_and_add($line, &$tracker)
 {
-    global $f;
-    $tracker = Array();
-    fseek($f, 0); $line = fgets($f);
+    $project = explode(': ', trim($line));
+    $times   = explode(' - ', $project[1]);
+    $project = strtolower(trim($project[0]));
+    if (!isset($times[1])) return;
 
-    while (false !== ($line = fgets($f))) {
-        $project = explode(': ', trim($line));
-        $times   = explode(' - ', $project[1]);
-        $project = strtolower(trim($project[0]));
+    $start_time = str_replace(' on ', ' ', $times[0]);
+    $start_time = date_create($start_time);
+    $end_time   = str_replace(' on ', ' ', $times[1]);
+    $end_time   = date_create($end_time);
 
-        $start_time = str_replace(' on ', ' ', $times[0]);
-        $start_time = date_create($start_time);
-        $end_time   = str_replace(' on ', ' ', $times[1]);
-        $end_time   = date_create($end_time);
-
-        $diff = date_diff($start_time, $end_time);
-        if (isset($tracker[$project])) {
-            $a = date_create('00:00');
-            $b = clone $a;
-            $b = date_add($b, $tracker[$project]);
-            $b = date_add($b, $diff);
-            $tracker[$project] = date_diff($a, $b);
-        } else {
-            $tracker[$project] = $diff;
-        }
+    $diff = date_diff($start_time, $end_time);
+    if (isset($tracker[$project])) {
+        $a = date_create('00:00');
+        $b = clone $a;
+        $b = date_add($b, $tracker[$project]);
+        $b = date_add($b, $diff);
+        $tracker[$project] = date_diff($a, $b);
+    } else {
+        $tracker[$project] = $diff;
     }
+}
 
+
+function print_summary($pipe = false)
+{
+    $tracker = Array();
+    if (!$pipe) {
+        global $f; fseek($f, 0);
+        while (false !== ($line = fgets($f)))
+            parse_and_add($line, $tracker);
+    } else {
+        while (false !== ($line = fgets(STDIN)))
+            parse_and_add($line, $tracker);
+    }
     foreach ($tracker as $project => $diff)
         echo "$project: ", format_diff($diff), "\n";
 }
@@ -149,7 +157,7 @@ switch ($command) {
         print_tracker($active);
         break;
     case 'parse':
-        error("[!] TODO\n");
+        print_summary(true);
         break;
     default:
         error("[!] invalid command\n");
