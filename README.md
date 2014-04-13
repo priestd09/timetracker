@@ -39,6 +39,6 @@ To install (tt) run the following commands:
 
 ## License ##
 
-Copyright (c) 2014, Chris Frazier <chris@chrisfrazier.me>
+Copyright (c) 2014, Chris Frazier <chris@chrisfrazier.me>  
 GNU LGPL license
 
