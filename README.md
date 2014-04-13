@@ -37,6 +37,16 @@ To install (tt) run the following commands:
  * `cd timetracker && rake install`
 
 
+## Bonus ##
+
+Enable tab completion for project names by putting the following in your .zshrc:
+
+    function _completett {
+        reply=(start stop summary print parse $(tt projects))
+    }
+    compctl -K _completett tt
+
+
 ## License ##
 
 Copyright (c) 2014, Chris Frazier <chris@chrisfrazier.me>  
