@@ -116,6 +116,20 @@ function print_summary($pipe = false)
 }
 
 
+function print_projects()
+{
+    global $f; fseek($f, 0);
+    while (false !== ($line = fgets($f))) {
+        $project = explode(': ', trim($line));
+        $project = strtolower(trim($project[0]));
+        $projects[] = $project;
+    }
+    $projects = array_unique($projects);
+    foreach ($projects as $project)
+        echo "$project\n";
+}
+
+
 function print_tracker()
 {
     global $f, $tracker_file, $active;
@@ -163,6 +177,9 @@ switch ($command) {
     case 'stop':
         if ($active) print_working(true);
         else error("[!] there are no active projects running\n");
+        break;
+    case 'projects':
+        print_projects();
         break;
     case 'print':
         print_tracker($active);
