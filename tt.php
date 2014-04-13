@@ -14,9 +14,8 @@ function error($string)
 }
 
 
-function format_diff($dt1, $dt2)
+function format_diff($diff)
 {
-    $diff = date_diff($dt1, $dt2);
     if ($diff->y > 0)
         return $diff->y.'y'.$diff->m.'m'.$diff->d.'d'.$diff->h.'h'.$diff->i .'m';
     elseif ($diff->m > 0)
@@ -58,7 +57,7 @@ function print_working($stop = false)
     $day  = date_format($dt, 'd M Y');
 
     if ($stop) fwrite($f, "$time on $day\n");
-    $diff = format_diff($dt, $dts);
+    $diff = format_diff(date_diff($dt, $dts));
     $word = $stop ? 'worked' : 'working';
     echo "$word on $project:\n  from     $times\n  to now,  $time on $day\n";
     echo "        => \033[1;33m$diff elapsed\033[0m\n";
@@ -67,7 +66,34 @@ function print_working($stop = false)
 
 function print_summary()
 {
-    // TODO
+    global $f;
+    $tracker = Array();
+    fseek($f, 0); $line = fgets($f);
+
+    while (false !== ($line = fgets($f))) {
+        $project = explode(': ', trim($line));
+        $times   = explode(' - ', $project[1]);
+        $project = strtolower(trim($project[0]));
+
+        $start_time = str_replace(' on ', ' ', $times[0]);
+        $start_time = date_create($start_time);
+        $end_time   = str_replace(' on ', ' ', $times[1]);
+        $end_time   = date_create($end_time);
+
+        $diff = date_diff($start_time, $end_time);
+        if (isset($tracker[$project])) {
+            $a = date_create('00:00');
+            $b = clone $a;
+            $b = date_add($b, $tracker[$project]);
+            $b = date_add($b, $diff);
+            $tracker[$project] = date_diff($a, $b);
+        } else {
+            $tracker[$project] = $diff;
+        }
+    }
+
+    foreach ($tracker as $project => $diff)
+        echo "$project: ", format_diff($diff), "\n";
 }
 
 
